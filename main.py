@@ -13,16 +13,15 @@ import os
 load_dotenv()
 
 TOKEN: Final = os.getenv("TOKEN")
-BOT_USERNAME: Final = "@rem_remainder_bot"
-
-
+BOT_USERNAME: Final = "@rem_remainder_bot" #bot name
+WAITING_FOR_TIMEZONE: Final = 0
 
 class ReminderDB:
-    def __init__(self, filename="reminders.json"):
+    def __init__(self, filename="reminders.json"): #loading
         self.filename=filename
         self.reminders=self.load()
 
-    def load(self):
+    def load(self): 
         if os.path.exists(self.filename):
             with open(self.filename, "r") as f:
                 return json.load(f)
@@ -47,7 +46,8 @@ class ReminderDB:
         if user_id in self.reminders:
             self.reminders[user_id].pop(index)
             self.save()
-    def set_timezone(self, user_id, timezone_str):
+
+    def set_timezone(self, user_id, timezone_str): #saving user timezone
         if user_id not in self.reminders:
             self.reminders[user_id]={
                 "timezone":timezone_str,
@@ -56,12 +56,21 @@ class ReminderDB:
         else:
             self.reminders[user_id]["timezone"]=timezone_str
         self.save()
+
+
 # commands
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("pls type something so i can respond")
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello! I am Rem")
+    await update.message.reply_text(
+        "👋 Hello! I am Rem — your personal reminder!\n\n"
+        "First, tell me where are you from? So that I can set your timezone!\n"
+        "Type your country: \n"
+        "🌍 Myanmar, Thailand, Singapore, Malaysia"
+    )
+    return WAITING_FOR_TIMEZONE
+        
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("This is a custom command")
@@ -75,11 +84,21 @@ async def receive_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         db.set_timezone(user_id, timezone)
         await update.message.reply_text(
             f"✅ Timezone set to {timezone}!\n\n"
+            "/help — Get help on how to use the bot\n"
             "📌 /set — Set a schedule reminder\n"
             "📋 /view — View your schedules\n"
-            "/alarm-set a alarm(you can setup the alarm upto 3hours)"
+            "/alarm — Set an alarm (you can set the alarm up to 3 hours in advance)\n"
             "🗑️ /delete — Delete a reminder"
         )
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text(
+            "❌ Sorry, I don't recognize that location. Please try again.\n"
+            "🌍 Myanmar, Thailand, Singapore, Malaysia"
+        )
+        return WAITING_FOR_TIMEZONE
+        
+        
 # responses
 def handle_response(text: str) -> str:
     processed: str = text.lower()
@@ -111,13 +130,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
-
+db= ReminderDB()
 if __name__ == "__main__":
-    print("Starting bot...")
     app = Application.builder().token(TOKEN).build()
 
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("start", start_command)],
+        states={ 
+            WAITING_FOR_TIMEZONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_timezone)]
+        },
+        fallbacks=[]
+    )
+
+    app.add_handler(conv_handler)
     # Commands 
-    app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("custom", custom_command))
 
@@ -129,3 +155,5 @@ if __name__ == "__main__":
     
     print("Polling...") 
     app.run_polling(poll_interval=3)
+
+
