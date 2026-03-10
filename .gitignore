@@ -1,0 +1,5 @@
+.env
+reminders.json
+__pycache__/
+venv/
+token.env
