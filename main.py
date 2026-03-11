@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from telegram.ext import ConversationHandler
 from dotenv import load_dotenv
 from timezones import TIMEZONE_MAP #importing from timezone.py
+from keyboards import date_keyboard, hour_keyboard, minute_keyboard
+from telegram.ext import CallbackQueryHandler
 import pytz
 import json
 import os
@@ -15,6 +17,10 @@ load_dotenv()
 TOKEN: Final = os.getenv("TOKEN")
 BOT_USERNAME: Final = "@rem_remainder_bot" #bot name
 WAITING_FOR_TIMEZONE: Final = 0
+ASKING_DATE=1
+ASKING_TIME=2
+ASKING_MINUTES=3
+ASKING_DESCRIPTION=4
 
 class ReminderDB:
     def __init__(self, filename="reminders.json"): #loading
@@ -62,6 +68,8 @@ class ReminderDB:
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("pls type something so i can respond")
 
+
+#/start
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "👋 Hello! I am Rem — your personal reminder!\n\n"
@@ -71,6 +79,76 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     return WAITING_FOR_TIMEZONE
         
+
+async def set_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "📅 When is your class?",
+        reply_markup=date_keyboard()  #from keyboards.py
+    )
+    return ASKING_DATE
+
+async def date_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query= update.callback_query
+    await query.answer()
+
+    if query.data=="today":
+        date = datetime.now().strftime("%Y-%m-%d")
+    elif query.data=="tomorrow":
+        date = (datetime.now()+timedelta(days=1)).strftime("%Y-%m-%d")
+    elif query.data=="pick_date":
+        await query.edit_message_text("📅 Type your date:\nFormat: YYYY-MM-DD")
+        return ASKING_DATE
+
+    context.user_data["date"] = date
+    await query.edit_message_text("⏰ Select hour:", reply_markup=hour_keyboard())
+    return ASKING_TIME
+
+async def hour_callback(update: Update, context:ContextTypes.DEFAULT_TYPE):
+    query=update.callback_query
+    await query.answer()
+
+    context.user_data["hour"]=query.data
+
+    await query.edit_message_text(
+        "⏰ Select minutes:",
+        reply_markup=minute_keyboard()
+    )
+    return ASKING_MINUTES
+
+async def minute_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    context.user_data["minutes"] = query.data  # save minutes
+
+    await query.edit_message_text(
+        "📝 Add a description:\n"
+    )
+    return ASKING_DESCRIPTION 
+
+async def receive_description(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = str(update.message.chat.id)
+    description = update.message.text
+
+    # build the full datetime string from saved data
+    date = context.user_data["date"]
+    hour = context.user_data["hour"]
+    minutes = context.user_data["minutes"]
+    datetime_str = f"{date} {hour}:{minutes}"
+
+    # save to database
+    db.add_reminder(user_id, description, datetime_str)
+
+    await update.message.reply_text(
+        f"✅ Reminder saved!\n\n"
+        f"📚 {description}\n"
+        f"📅 {datetime_str}\n\n"
+        f"I will remind you:\n"
+        f"☀️ Morning of {date}\n"
+        f"⏰ 10 min before\n"
+        f"🔔 At {hour}:{minutes}"
+    )
+    return ConversationHandler.END  # end the conversation
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("This is a custom command")
@@ -93,7 +171,7 @@ async def receive_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
     else:
         await update.message.reply_text(
-            "❌ Sorry, I don't recognize that location. Please try again.\n"
+            "❌ Sorry, I don't recognize that location or we haven't launch for your lcoation yet.\n"
             "🌍 Myanmar, Thailand, Singapore, Malaysia"
         )
         return WAITING_FOR_TIMEZONE
@@ -135,11 +213,18 @@ if __name__ == "__main__":
     app = Application.builder().token(TOKEN).build()
 
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("start", start_command)],
+        entry_points=[
+        CommandHandler("start", start_command),
+        CommandHandler("set", set_command)],
         states={ 
-            WAITING_FOR_TIMEZONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_timezone)]
+            WAITING_FOR_TIMEZONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_timezone)],
+            ASKING_DATE: [CallbackQueryHandler(date_callback)],         
+            ASKING_TIME: [CallbackQueryHandler(hour_callback)],         
+            ASKING_MINUTES: [CallbackQueryHandler(minute_callback)],   
+            ASKING_DESCRIPTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_description)]
         },
-        fallbacks=[]
+        fallbacks=[],
+        per_message=False
     )
 
     app.add_handler(conv_handler)
@@ -155,5 +240,3 @@ if __name__ == "__main__":
     
     print("Polling...") 
     app.run_polling(poll_interval=3)
-
-

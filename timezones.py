@@ -2,18 +2,18 @@
 
 TIMEZONE_MAP = {
     # Myanmar
-    "myanmar": "Asia/Yangon",
-    "yangon": "Asia/Yangon",
-    "mandalay": "Asia/Yangon",
+    "myanmar": "Asia/Myanmar",
+    "yangon": "Asia/Myanmar",
+    "mandalay": "Asia/Myanmar",
 
     # Thailand
-    "thailand": "Asia/Bangkok",
-    "bangkok": "Asia/Bangkok",
+    "thailand": "Asia/Thailand",
+    "bangkok": "Asia/Thailand",
 
     # Singapore
     "singapore": "Asia/Singapore",
 
     # Malaysia
-    "malaysia": "Asia/Kuala_Lumpur",
-    "kuala lumpur": "Asia/Kuala_Lumpur",
+    "malaysia": "Asia/Malaysia",
+    "kuala lumpur": "Asia/Malaysia",
 }
