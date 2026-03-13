@@ -10,9 +10,9 @@ from telegram.ext import CallbackQueryHandler
 import pytz
 import json
 import os
+#You can find most of the import from the online
 
-
-load_dotenv()
+load_dotenv() #loading telegram token from the other file
 
 TOKEN: Final = os.getenv("TOKEN")
 BOT_USERNAME: Final = "@rem_remainder_bot" #bot name
@@ -34,7 +34,7 @@ class RemDB:
         return {}
     def save(self):
         with open(self.filename,"w")as f:
-            json.dump(self.rems, f)
+            json.dump(self.rems, f, indent=2)
 
     def add_rem(self, user_id, class_name, datetime_str): #create user id
         if user_id not in (self.rems):
@@ -224,27 +224,52 @@ async def view_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     db.rems[user_id]["rems"]=active_rems
     db.save()
 
-    today_rems=[r for r in active_rems if r["datetime"].startswith(today)]
+    today_rems=sorted([r for r in active_rems if r["datetime"].startswith(today)], key=lambda r: r["datetime"])
 
     if today_rems:
-        message="\n📅 *Today's Schedule:*\n"
+        message="\n📅 *Today's Upcoming Schedule:*\n"
         for rem in today_rems:
             time=rem["datetime"].split(" ")[1]
             message=message+f"🕐 {time} — {rem['class_name']}\n"
     else:
         message="\n📭 No schedule for today!"
 
-    upcoming=[r for r in active_rems if not r["datetime"].startswith(today)]
+    upcoming=sorted([r for r in active_rems if not r["datetime"].startswith(today)], key=lambda r: r["datetime"])
 
     if upcoming:
-        message= message+ "\n📋 *Upcoming:*\n"
+        message= message+ "\n📋 *Upcoming for next days:*\n\n"
         for rem in upcoming:
-            message=message+f"📌{rem['datetime']}-{rem['class_name']}"
+            message=message+f"📌{rem['datetime']}-{rem['class_name']}\n"
     else:
-        message=message+"\n📭 No upcoming schedules!"
+        message=message+"\n📭 No schedules for the next days!"
 
     await update.message.reply_text(message, parse_mode="Markdown")
 
+async def check_rems(context):
+    now_utc=datetime.now(pytz.utc)
+
+    for user_id, user_data in db.rems.items():
+        tz_str=user_data.get("timezone", "UTC")
+        user_tz=pytz.timezone(tz_str)
+        now=now_utc.astimezone(user_tz)
+
+        for rem in user_data.get("rems", []):
+            rem_time=user_tz.localize(
+                datetime.strptime(rem["datetime"], "%Y-%m-%d %H:%M")
+            )
+            diff=rem_time-now
+            min_away=diff.total_seconds()/60
+
+            if 0<=min_away<=1:
+                await context.bot.send_message(
+                    chat_id=user_id,
+                    text=f"🔔 {rem['class_name']} Starting now!\n"
+                )
+            elif 9 <= min_away < 10:
+                await context.bot.send_message(
+                    chat_id=user_id,
+                    text=f"⏰ {rem['class_name']} 10 minutes left!\n📚"
+                )
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("This is a custom command")
@@ -256,6 +281,7 @@ db= RemDB()
 if __name__ == "__main__":
     print("Starting bot...")
     app = Application.builder().token(TOKEN).build()
+    app.job_queue.run_repeating(check_rems, interval=60, first=10)
 
     conv_handler = ConversationHandler(
         entry_points=[
