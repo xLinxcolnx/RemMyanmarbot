@@ -22,10 +22,10 @@ ASKING_TIME=2
 ASKING_MINUTES=3
 ASKING_DESCRIPTION=4
 
-class ReminderDB:
-    def __init__(self, filename="reminders.json"): #loading
+class RemDB:
+    def __init__(self, filename="rems.json"): #loading
         self.filename=filename
-        self.reminders=self.load()
+        self.rems=self.load()
 
     def load(self): 
         if os.path.exists(self.filename):
@@ -34,33 +34,38 @@ class ReminderDB:
         return {}
     def save(self):
         with open(self.filename,"w")as f:
-            json.dump(self.reminders, f)
+            json.dump(self.rems, f)
 
-    def add_reminder(self, user_id, class_name, datetime_str): #create user id
-        if user_id not in (self.reminders):
-            self.reminders[user_id]=[]
-        self.reminders[user_id].append({
+    def add_rem(self, user_id, class_name, datetime_str): #create user id
+        if user_id not in (self.rems):
+            self.rems[user_id]={
+                "timezone": "",
+                "rems": [],
+            }
+        self.rems[user_id]["rems"].append({
             "class_name": class_name,
             "datetime": datetime_str,
         })
         self.save()
 
-    def get_reminder(self, user_id):
-        return self.reminders.get(user_id, [])
+    def get_rem(self, user_id):
+        if user_id not in self.rems:
+            return []
+        return self.rems[user_id].get("rems", [])
     
-    def delete_reminder(self, user_id, index):
-        if user_id in self.reminders:
-            self.reminders[user_id].pop(index)
+    def delete_rem(self, user_id, index):
+        if user_id in self.rems:
+            self.rems[user_id]["rems"].pop(index)
             self.save()
 
     def set_timezone(self, user_id, timezone_str): #saving user timezone
-        if user_id not in self.reminders:
-            self.reminders[user_id]={
+        if user_id not in self.rems:
+            self.rems[user_id]={
                 "timezone":timezone_str,
-                "reminders": []
+                "rems": []
             }
         else:
-            self.reminders[user_id]["timezone"]=timezone_str
+            self.rems[user_id]["timezone"]=timezone_str
         self.save()
 
 
@@ -72,14 +77,36 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #/start
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "👋 Hello! I am Rem — your personal reminder!\n\n"
+        "👋 Hello! I am Rem — your personal rem!\n\n"
         "First, tell me where are you from? So that I can set your timezone!\n"
         "Type your country: \n"
-        "🌍 Myanmar, Thailand, Singapore, Malaysia"
+        "🌍 Myanmar, Thailand, Singapore, Malaysia, Canada"
     )
     return WAITING_FOR_TIMEZONE
         
+async def receive_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id= str(update.message.chat.id)
+    user_input=update.message.text.lower().strip()
 
+    if user_input in TIMEZONE_MAP:
+        timezone= TIMEZONE_MAP[(user_input)]
+        db.set_timezone(user_id, timezone)
+        await update.message.reply_text(
+            f"✅ Timezone set to {timezone}!\n\n"
+            "/help — Get help on how to use the bot\n"
+            "📌 /set — Set a schedule rem\n"
+            "📋 /view — View your schedules\n"
+            "/alarm — Set an alarm (you can set the alarm up to 3 hours in advance)\n"
+            "🗑️ /delete — Delete a rem"
+        )
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text(
+            "❌ Sorry, I don't recognize that location or we haven't launch for your lcoation yet.\n"
+            "🌍 Myanmar, Thailand, Singapore, Malaysia, Canada"
+        )
+        return WAITING_FOR_TIMEZONE
+      
 async def set_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "📅 When is your class?",
@@ -102,6 +129,24 @@ async def date_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["date"] = date
     await query.edit_message_text("⏰ Select hour:", reply_markup=hour_keyboard())
     return ASKING_TIME
+
+async def receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_input=update.message.text.strip()
+    try:
+        datetime.strptime(user_input, "%Y-%m-%d")
+        context.user_data["date"]=user_input
+        await update.message.reply_text(
+            "⏰ Select hour:",
+            reply_markup=hour_keyboard()
+        )
+        return ASKING_TIME
+    except ValueError:
+        await update.message.reply_text(
+            "❌ Invalid date! Please try again.\n"
+            "Format: YYYY-MM-DD\n"
+            "Example: 2026-03-22")
+        return ASKING_DATE
+
 
 async def hour_callback(update: Update, context:ContextTypes.DEFAULT_TYPE):
     query=update.callback_query
@@ -136,89 +181,90 @@ async def receive_description(update: Update, context: ContextTypes.DEFAULT_TYPE
     minutes = context.user_data["minutes"]
     datetime_str = f"{date} {hour}:{minutes}"
 
+    user_tz_str=db.rems[user_id]["timezone"]
+    user_tz= pytz.timezone(user_tz_str)
+
+    now=datetime.now(user_tz)
+    rem_time=user_tz.localize(datetime.strptime(datetime_str, "%Y-%m-%d %H:%M"))
+
+    if rem_time<now:
+        await update.message.reply_text(
+            "The time has already passed\n"
+        )
+        return ConversationHandler.END
+    
+
     # save to database
-    db.add_reminder(user_id, description, datetime_str)
+    db.add_rem(user_id, description, datetime_str)
 
     await update.message.reply_text(
-        f"✅ Reminder saved!\n\n"
+        f"✅ rem saved!\n\n"
         f"📚 {description}\n"
         f"📅 {datetime_str}\n\n"
         f"I will remind you:\n"
-        f"☀️ Morning of {date}\n"
         f"⏰ 10 min before\n"
         f"🔔 At {hour}:{minutes}"
     )
     return ConversationHandler.END  # end the conversation
 
+async def view_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id=str(update.message.chat.id)
+
+    user_tz=pytz.timezone(db.rems[user_id]["timezone"])
+    today=datetime.now(user_tz).strftime("%Y-%m-%d")
+    now=datetime.now(user_tz)
+
+    rems= db.get_rem(user_id)
+    active_rems=[]
+    for rem in rems:
+        rem_time=user_tz.localize(datetime.strptime(rem["datetime"], "%Y-%m-%d %H:%M"))
+        if rem_time>now:
+            active_rems.append(rem)
+    
+    db.rems[user_id]["rems"]=active_rems
+    db.save()
+
+    today_rems=[r for r in active_rems if r["datetime"].startswith(today)]
+
+    if today_rems:
+        message="\n📅 *Today's Schedule:*\n"
+        for rem in today_rems:
+            time=rem["datetime"].split(" ")[1]
+            message=message+f"🕐 {time} — {rem['class_name']}\n"
+    else:
+        message="\n📭 No schedule for today!"
+
+    upcoming=[r for r in active_rems if not r["datetime"].startswith(today)]
+
+    if upcoming:
+        message= message+ "\n📋 *Upcoming:*\n"
+        for rem in upcoming:
+            message=message+f"📌{rem['datetime']}-{rem['class_name']}"
+    else:
+        message=message+"\n📭 No upcoming schedules!"
+
+    await update.message.reply_text(message, parse_mode="Markdown")
+
+
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("This is a custom command")
 
-async def receive_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id= str(update.message.chat.id)
-    user_input=update.message.text.lower().strip()
-
-    if user_input in TIMEZONE_MAP:
-        timezone= TIMEZONE_MAP[(user_input)]
-        db.set_timezone(user_id, timezone)
-        await update.message.reply_text(
-            f"✅ Timezone set to {timezone}!\n\n"
-            "/help — Get help on how to use the bot\n"
-            "📌 /set — Set a schedule reminder\n"
-            "📋 /view — View your schedules\n"
-            "/alarm — Set an alarm (you can set the alarm up to 3 hours in advance)\n"
-            "🗑️ /delete — Delete a reminder"
-        )
-        return ConversationHandler.END
-    else:
-        await update.message.reply_text(
-            "❌ Sorry, I don't recognize that location or we haven't launch for your lcoation yet.\n"
-            "🌍 Myanmar, Thailand, Singapore, Malaysia"
-        )
-        return WAITING_FOR_TIMEZONE
-        
-        
-# responses
-def handle_response(text: str) -> str:
-    processed: str = text.lower()
-    
-    if 'hello' in processed:
-        return "hey there"
-    if "how are you" in processed:
-        return "Im good you"
-    return "i do not understand"
-
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    message_type: str = update.message.chat.type
-    text: str = update.message.text
-
-    print(f'User({update.message.chat.id}) in {message_type}: "{text}"')
-
-    if message_type == "group":
-        if BOT_USERNAME in text:
-            new_text: str = text.replace(BOT_USERNAME, "").strip()
-            response: str = handle_response(new_text)
-        else:
-            return  # DON'T respond in groups unless mentioned
-    else:
-        response: str = handle_response(text)
-
-    print("Bot:", response)
-    await update.message.reply_text(response)
-
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
-
-db= ReminderDB()
+ 
+db= RemDB()
 if __name__ == "__main__":
+    print("Starting bot...")
     app = Application.builder().token(TOKEN).build()
 
     conv_handler = ConversationHandler(
         entry_points=[
         CommandHandler("start", start_command),
-        CommandHandler("set", set_command)],
+        CommandHandler("set", set_command)
+        ],
         states={ 
             WAITING_FOR_TIMEZONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_timezone)],
-            ASKING_DATE: [CallbackQueryHandler(date_callback)],         
+            ASKING_DATE: [CallbackQueryHandler(date_callback), MessageHandler(filters.TEXT & ~filters.COMMAND, receive_date)],          
             ASKING_TIME: [CallbackQueryHandler(hour_callback)],         
             ASKING_MINUTES: [CallbackQueryHandler(minute_callback)],   
             ASKING_DESCRIPTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_description)]
@@ -228,15 +274,11 @@ if __name__ == "__main__":
     )
 
     app.add_handler(conv_handler)
-    # Commands 
+    # Commands
+    app.add_handler(CommandHandler("view", view_command)) 
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("custom", custom_command))
 
-    # Messages 
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    # Errors 
-    app.add_error_handler(error)
-    
     print("Polling...") 
+    app.add_error_handler(error) 
     app.run_polling(poll_interval=3)
