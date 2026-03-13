@@ -268,7 +268,7 @@ async def check_rems(context):
             elif 9 <= min_away < 10:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text=f"⏰ {rem['class_name']} 10 minutes left!\n📚"
+                    text=f"⏰ {rem['class_name']} 10 minutes left!\n"
                 )
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
