@@ -3,20 +3,12 @@
     "timezone": "America/Edmonton",
     "rems": [
       {
-        "class_name": "eg",
-        "datetime": "2026-03-13 14:00"
-      },
-      {
         "class_name": "w",
         "datetime": "2026-03-14 18:00"
       },
       {
         "class_name": "aw",
         "datetime": "2026-03-14 09:00"
-      },
-      {
-        "class_name": "lee",
-        "datetime": "2026-03-13 05:15"
       }
     ]
   },
@@ -39,6 +31,15 @@
       {
         "class_name": "MLBB",
         "datetime": "2026-03-13 18:15"
+      }
+    ]
+  },
+  "1659935511": {
+    "timezone": "Asia/Yangon",
+    "rems": [
+      {
+        "class_name": "Study time",
+        "datetime": "2026-3-23 10:30"
       }
     ]
   }

@@ -4,6 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from datetime import datetime, timedelta
 from telegram.ext import ConversationHandler
 from dotenv import load_dotenv
+from msg import HELP_MESSAGE, SETTING_MESSAGE
 from timezones import TIMEZONE_MAP #importing from timezone.py
 from keyboards import date_keyboard, hour_keyboard, minute_keyboard
 from telegram.ext import CallbackQueryHandler
@@ -71,7 +72,7 @@ class RemDB:
 
 # commands
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("pls type something so i can respond")
+    await update.message.reply_text(HELP_MESSAGE)
 
 
 #/start
@@ -274,6 +275,9 @@ async def check_rems(context):
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("This is a custom command")
 
+async def setting_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(SETTING_MESSAGE, parse_mode="Markdown")
+
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
  
@@ -303,6 +307,7 @@ if __name__ == "__main__":
     # Commands
     app.add_handler(CommandHandler("view", view_command)) 
     app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("setting", setting_command))
     app.add_handler(CommandHandler("custom", custom_command))
 
     print("Polling...") 
