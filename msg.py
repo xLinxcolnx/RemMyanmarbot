@@ -3,6 +3,9 @@ Welcome! I'm Rem 👋
 I help you stay on track with anything .
 How can I help you? 
 
+🐶 /start — New User
+   If you are a new user, don't forget to hit this
+
 📌 /set — Add a reminder
    Set the date, time and description
    for anything — class, meeting, event.
@@ -21,7 +24,7 @@ I'll notify you when it's time! 🔔
 
 SETTING_MESSAGE = """
 ⚙️ *Setting*
-🌍 /changetimezone — Change your timezone
+🌍 /start — Change your timezone
 ✏️ /edit — Edit a reminder description
-🗑️ /delete — Delete a reminder
+🗑️ /setting — Change a user setting
 """

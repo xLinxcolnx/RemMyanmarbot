@@ -3,43 +3,8 @@
     "timezone": "America/Edmonton",
     "rems": [
       {
-        "class_name": "w",
-        "datetime": "2026-03-14 18:00"
-      },
-      {
-        "class_name": "aw",
-        "datetime": "2026-03-14 09:00"
-      }
-    ]
-  },
-  "1854535152": {
-    "timezone": "Asia/Yangon",
-    "rems": [
-      {
-        "class_name": "Aeiou",
-        "datetime": "2026-03-13 17:45"
-      }
-    ]
-  },
-  "1968215516": {
-    "timezone": "Asia/Yangon",
-    "rems": [
-      {
-        "class_name": "wake me up",
-        "datetime": "2026-03-14 14:00"
-      },
-      {
-        "class_name": "MLBB",
-        "datetime": "2026-03-13 18:15"
-      }
-    ]
-  },
-  "1659935511": {
-    "timezone": "Asia/Yangon",
-    "rems": [
-      {
-        "class_name": "Study time",
-        "datetime": "2026-3-23 10:30"
+        "class_name": "mal",
+        "datetime": "2026-03-16 18:35"
       }
     ]
   }

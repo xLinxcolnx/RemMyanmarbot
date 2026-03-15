@@ -59,9 +59,36 @@ def minute_keyboard():
     keyboard = [
         [
             InlineKeyboardButton(":00", callback_data="00"),
+            InlineKeyboardButton(":05", callback_data="05"),
+            InlineKeyboardButton(":10", callback_data="10"),
             InlineKeyboardButton(":15", callback_data="15"),
+        ],
+        [
+            InlineKeyboardButton(":20", callback_data="20"),
+            InlineKeyboardButton(":25", callback_data="25"),
             InlineKeyboardButton(":30", callback_data="30"),
+            InlineKeyboardButton(":35", callback_data="35"),
+        ],
+        [
+            InlineKeyboardButton(":40", callback_data="40"),
             InlineKeyboardButton(":45", callback_data="45"),
+            InlineKeyboardButton(":50", callback_data="50"),
+            InlineKeyboardButton(":55", callback_data="55"),
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def morning_keyboard():
+    keyboard = [
+        [
+            InlineKeyboardButton("5 AM", callback_data="morning_05:00"),
+            InlineKeyboardButton("6 AM", callback_data="morning_06:00"),
+            InlineKeyboardButton("7 AM", callback_data="morning_07:00"),
+        ],
+        [
+            InlineKeyboardButton("8 AM", callback_data="morning_08:00"),
+            InlineKeyboardButton("9 AM", callback_data="morning_09:00"),
+            InlineKeyboardButton("10 AM", callback_data="morning_10:00"),
         ]
     ]
     return InlineKeyboardMarkup(keyboard)
