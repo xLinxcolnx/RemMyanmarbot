@@ -16,8 +16,8 @@ TIMEZONE_MAP = {
     "mandalay": "Asia/Yangon",
 
     # Thailand
-    "thailand": "Asia/Thailand",
-    "bangkok": "Asia/Thailand",
+    "thailand": "Asia/Bangkok",
+    "bangkok": "Asia/Bangkok",
 
     # Singapore
     "singapore": "Asia/Singapore",

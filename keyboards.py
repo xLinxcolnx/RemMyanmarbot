@@ -92,3 +92,17 @@ def morning_keyboard():
         ]
     ]
     return InlineKeyboardMarkup(keyboard)
+
+def reminder_keyboard():
+    keyboard = [
+        [
+            InlineKeyboardButton("10 min", callback_data="remind_10"),
+            InlineKeyboardButton("15 min", callback_data="remind_15"),
+            InlineKeyboardButton("20 min", callback_data="remind_20"),
+        ],
+        [
+            InlineKeyboardButton("25 min", callback_data="remind_25"),
+            InlineKeyboardButton("30 min", callback_data="remind_30"),
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
