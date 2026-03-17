@@ -1,9 +1,9 @@
-# 🤖 Rem Bot | Myanmar's Smart Schedule Assistant
+# 🤖 RemMyanmar Bot | Myanmar's Smart Schedule Assistant
 
 [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/RemMyanmarbot)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 
-**Rem Bot** is a specialized Telegram assistant designed to help users in Myanmar stay on top of their schedules. In an environment where Telegram is the primary hub for entertainment and social interaction, Rem Bot bridges the gap between relaxation and productivity.
+**Rem** is a specialized Telegram bot designed to help users in Myanmar stay on top of their schedules. In Myanmar, Telegram is the primary hub for entertainment and social interaction, Rem fills the gap between relaxation and productivity.
 
 ## 📊 The "Why": Data-Driven Insights
 Before writing a single line of code, I conducted a survey of **71 participants** to understand the scheduling habits of Myanmar users. Using **Power BI**, I uncovered key "pain points":
@@ -17,7 +17,7 @@ Before writing a single line of code, I conducted a survey of **71 participants*
 ---
 
 ## ✨ Key Features
-Rem Bot isn't just a simple timer; it's a personalized notification system:
+Rem isn't just a simple timer; it's a personalized notification system:
 
 * **☀️ Morning Summaries:** Receive a daily breakdown of your tasks every morning at a time you choose (default 07:00 AM).
 * **⏰ Proactive Alerts:** Get reminded **10 to 30 minutes before** a task starts to ensure you have time to prepare.
