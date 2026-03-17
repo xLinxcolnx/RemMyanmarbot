@@ -6,7 +6,7 @@
 **Rem** is a specialized Telegram bot designed to help users in Myanmar stay on top of their schedules. In Myanmar, Telegram is the primary hub for entertainment and social interaction, Rem fills the gap between relaxation and productivity.
 
 ## 📊 The "Why": Data-Driven Insights
-Before writing a single line of code, I conducted a survey of **71 participants** to understand the scheduling habits of Myanmar users. Using **Power BI**, I uncovered key "pain points":
+Before writing a single line of code, I conducted a survey of **71 participants** from Myanmar to understand the scheduling habits of Myanmar users. Using **Power BI**, I uncovered key "pain points":
 
 * **The Target Audience:** My research showed that the **18–24 age group** is the most active but also the most likely to miss scheduled tasks.
 * **The Distraction Factor:** Users reported missing schedules specifically while **watching movies or chatting** within Telegram.
