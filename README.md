@@ -1,52 +1,171 @@
-# 🤖 RemMyanmar Bot | Myanmar's Smart Schedule Assistant
+# 🤖 RemMyanmar — Telegram Reminder Bot
 
-[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/RemMyanmarbot)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+<p align="center">
+  <img src="RemMyanmar_logo.jpg" width="180" alt="Rem Logo"/>
+</p>
 
-**Rem** is a specialized Telegram bot designed to help users in Myanmar stay on top of their schedules. In Myanmar, Telegram is the primary hub for entertainment and social interaction, Rem fills the gap between relaxation and productivity.
+<p align="center">
+  A Telegram bot that helps users in Myanmar and Southeast Asia stay on top of their daily schedules — built after real user research showing that <strong>73% of Telegram users use it every day</strong>, and many miss classes or events while watching movies or chatting.
+</p>
 
-## 📊 The "Why": Data-Driven Insights
-Before writing a single line of code, I conducted a survey of **71 participants** from Myanmar to understand the scheduling habits of Myanmar users. Using **Power BI**, I uncovered key "pain points":
-
-* **The Target Audience:** My research showed that the **18–24 age group** is the most active but also the most likely to miss scheduled tasks.
-* **The Distraction Factor:** Users reported missing schedules specifically while **watching movies or chatting** within Telegram.
-* **The Solution:** Users indicated a need for in-app notifications that bypass the "VPN fatigue" often associated with other social platforms.
-
-> **Key Finding:** Standard phone alarms are easily ignored during full-screen media usage. Rem Bot provides native Telegram alerts that appear exactly where the user is already spending their time.
-
----
-
-## ✨ Key Features
-Rem isn't just a simple timer; it's a personalized notification system:
-
-* **☀️ Morning Summaries:** Receive a daily breakdown of your tasks every morning at a time you choose (default 07:00 AM).
-* **⏰ Proactive Alerts:** Get reminded **10 to 30 minutes before** a task starts to ensure you have time to prepare.
-* **🌍 Timezone Intelligent:** Built-in support for global timezones, including specific mapping for Myanmar users to ensure precision.
-* **🛠️ Full CRUD Capability:** Easily `/set`, `/view`, `/edit`, and `/delete` your schedules through an intuitive interface.
+<p align="center">
+  <a href="https://t.me/RemMyanmarbot">
+    <img src="https://img.shields.io/badge/Telegram-@RemMyanmarbot-2CA5E0?style=flat&logo=telegram"/>
+  </a>
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?style=flat&logo=python"/>
+</p>
 
 ---
 
-## 🛠️ Technical Stack
-* **Language:** Python 3.x
-* **Framework:** `python-telegram-bot`
-* **Data Persistence:** JSON-based local database (`rems.json`) for lightweight performance
-* **Analysis:** Power BI & Excel (Market Research Phase)
+## 📊 Research Background
+
+Before building the bot, a survey was conducted targeting **Myanmar Telegram users** to understand their usage habits and pain points.
+
+🔗 **Survey (Myanmar only):** [View Survey](https://docs.google.com/forms/d/1SRfZ_2U3-znFYuBcm0hJh-R2qEZ5dZmnz_noWjYr0sg/edit)
+
+**71 responses** were collected, cleaned and analyzed:
+- Raw data collected via Google Forms
+- Data cleaned and processed in Excel
+- Visualized using Power BI dashboard
+
+| Finding | Result |
+|---|---|
+| Daily Telegram users | **73.24%** |
+| Ever missed a class/event on Telegram | **Yes — majority** |
+| #1 reason for missing | Forgot completely / No reminder set |
+| Most wanted feature | Daily morning schedule summary |
+| Current reminder method | Phone alarm (36.62%) or Nothing (26.76%) |
+
+The data showed a clear gap — people needed a reminder tool that lived **inside Telegram** itself.
 
 ---
 
-## 🚀 Getting Started
+## ✨ Features
 
-### Commands
+- 📅 **Set reminders** — pick date, time and add a description for anything
+- 📋 **View schedule** — see today's and upcoming reminders sorted by time
+- ☀️ **Morning summary** — daily schedule sent at your chosen time every day
+- ⏰ **Custom reminder warning** — get notified 10–30 min before any event
+- ✏️ **Edit reminders** — update description anytime
+- 🗑️ **Delete reminders** — remove reminders easily
+- 🌍 **Multi-timezone support** — works for users across multiple countries
+- ❌ **Cancel anytime** — type `/cancel` to stop any ongoing action
+
+---
+
+## 📸 Screenshots
+
+| Setup | Set Reminder | View Schedule |
+|---|---|---|
+| ![demo1](demo_1.png) | ![demo2](demo_2.png) | ![demo3](demo_3.png) |
+
+---
+
+## 📊 Survey Dashboard
+
+Built with Power BI to visualize the research data collected before building the bot.
+
+![Dashboard](dashboard.png)
+
+---
+
+## 💬 Commands
+
 | Command | Description |
-| :--- | :--- |
-| `/start` | Setup your timezone and notification preferences |
-| `/set` | Add a new schedule with date, time, and description |
-| `/view` | See today's upcoming tasks and future reminders |
-| `/edit` | Update an existing schedule description |
-| `/delete` | Remove a schedule from your list |
-| `/setting` | Change your morning summary or reminder lead-time |
+|---|---|
+| `/start` | Set up your timezone and preferences |
+| `/set` | Add a new reminder |
+| `/view` | View today's and upcoming schedule |
+| `/edit` | Edit a reminder description |
+| `/delete` | Delete a reminder |
+| `/setting` | View settings menu |
+| `/changemorning` | Change morning summary time |
+| `/changereminder` | Change reminder warning time |
+| `/countries` | See available locations |
+| `/cancel` | Cancel any ongoing action |
+| `/help` | Show help message |
 
-### Installation (For Developers)
-1. Clone the repo:
-   ```bash
-   git clone [https://github.com/yourusername/rem-bot.git](https://github.com/yourusername/rem-bot.git)
+---
+
+## 🌍 Supported Locations
+
+| Country | Keywords |
+|---|---|
+| 🇲🇲 Myanmar | myanmar, yangon, mandalay |
+| 🇹🇭 Thailand | thailand, bangkok |
+| 🇸🇬 Singapore | singapore |
+| 🇲🇾 Malaysia | malaysia, kuala lumpur |
+| 🇨🇦 Canada | canada, toronto, vancouver, calgary, montreal, edmonton, winnipeg |
+| 🇺🇸 USA | usa, miami, new york, los angeles, chicago |
+| 🇭🇺 Hungary | hungary, budapest |
+
+---
+
+## 🛠️ Tech Stack
+
+| Tool | Purpose |
+|---|---|
+| Python 3.10+ | Main language |
+| python-telegram-bot | Telegram bot framework |
+| pytz | Timezone handling |
+| python-dotenv | Secure token management |
+| JSON | Local data storage |
+| Power BI | Survey data dashboard |
+| Google Forms | User research survey |
+
+---
+
+## 🚀 Run Locally
+
+**1. Clone the repo:**
+```bash
+git clone https://github.com/yourusername/telegrambot.git
+cd telegrambot
+```
+
+**2. Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+**3. Create a `.env` file:**
+```
+TOKEN=your_telegram_bot_token_here
+```
+
+**4. Run the bot:**
+```bash
+python rem.py
+```
+
+---
+
+## 📁 Project Structure
+
+```
+telegrambot/
+├── rem.py                          # Main bot logic
+├── keyboards.py                    # Inline keyboard layouts
+├── timezones.py                    # Timezone mapping
+├── msg.py                          # Bot messages and text
+├── requirements.txt                # Python dependencies
+├── Procfile                        # Deployment config
+├── .gitignore                      # Excludes .env and rems.json
+├── data/
+│   ├── Telegram_Usage_Survey_raw.csv   # Raw survey responses
+│   └── cleaned_Rem_English.xlsx        # Cleaned and processed data
+└── dashboard/
+    └── Dashboard.pbix              # Power BI dashboard file
+```
+
+---
+
+## 📬 Try the Bot
+
+👉 Search **@RemMyanmarbot** on Telegram or click [here](https://t.me/RemMyanmarbot)
+
+---
+
+## 👨‍💻 Author
+
+Built by **Lincoln** as a personal project to solve a real problem observed in the Myanmar Telegram community.
