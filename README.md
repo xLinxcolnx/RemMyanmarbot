@@ -57,7 +57,7 @@ The data showed a clear gap — people needed a reminder tool that lived **insid
 
 | Setup | Set Reminder | View Schedule |
 |---|---|---|
-| ![demo 1](demo_1.png) | ![demo 2](demo_2.png) | ![demo 3](demo_3.png) |
+| ![demo 1](demo1.png) | ![demo 2](demo2.png) | ![demo 3](demo3.png) |
 
 ---
 
