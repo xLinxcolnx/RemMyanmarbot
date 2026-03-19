@@ -1,7 +1,7 @@
 # 🤖 RemMyanmar — Telegram Reminder Bot
 
 <p align="center">
-  <img src="RemMyanmar_logo.jpg" width="180" alt="Rem Logo"/>
+  <img src="RemMyanmar logo.jpg" width="180" alt="Rem Logo"/>
 </p>
 
 <p align="center">
@@ -57,7 +57,7 @@ The data showed a clear gap — people needed a reminder tool that lived **insid
 
 | Setup | Set Reminder | View Schedule |
 |---|---|---|
-| ![demo1](demo_1.png) | ![demo2](demo_2.png) | ![demo3](demo_3.png) |
+| ![demo 1](demo_1.png) | ![demo 2](demo_2.png) | ![demo 3](demo_3.png) |
 
 ---
 
