@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  A Telegram bot that helps users in Myanmar and Southeast Asia stay on top of their daily schedules — built after real user research showing that <strong>73% of Telegram users use it every day</strong>, and many miss classes or events while watching movies or chatting.
+  A Telegram bot that helps users in Myanmar and Southeast Asia stay on top of their daily schedules - built after real user research showing that <strong>73% of Telegram users use it every day</strong>, and many miss classes or events while watching movies or chatting.
 </p>
 
 <p align="center">
@@ -24,9 +24,9 @@ Before building the bot, a survey was conducted targeting **Myanmar Telegram use
 🔗 **Survey (Myanmar only):** [View Survey](https://docs.google.com/forms/d/1SRfZ_2U3-znFYuBcm0hJh-R2qEZ5dZmnz_noWjYr0sg/edit)
 
 **71 responses** were collected, cleaned and analyzed:
-- Raw data collected via Google Forms
-- Data cleaned and processed in Excel
-- Visualized using Power BI dashboard
+- Raw data collected via Google Forms ![Raw Data](Telegram_Usage_Survey_raw.xlsx)
+- Data cleaned and processed in Excel ![Cleaned_Data](cleaned_Rem_English.xlsx)
+- Visualized using Power BI dashboard ![Dashboard](Dashboard.pbix)
 
 | Finding | Result |
 |---|---|
@@ -129,6 +129,8 @@ pip install -r requirements.txt
 ```
 
 **3. Create a `.env` file:**
+
+Get your own Telegram token from BotFather. More on that [here](https://core.telegram.org/bots).
 ```
 TOKEN=your_telegram_bot_token_here
 ```
@@ -164,8 +166,4 @@ telegrambot/
 
 👉 Search **@RemMyanmarbot** on Telegram or click [here](https://t.me/RemMyanmarbot)
 
----
 
-## 👨‍💻 Author
-
-Built by **Lincoln** as a personal project to solve a real problem observed in the Myanmar Telegram community.
