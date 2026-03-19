@@ -325,8 +325,10 @@ async def check_rems(context):
         # morning summary- check if it's time to send
         now_str = now.strftime("%H:%M")#moring summary
         morning_time = user_data.get("morning_time", "07:00")
+        last_morning_sent = user_data.get("last_morning_sent", "")
+        today = now.strftime("%Y-%m-%d")
 
-        if now_str == morning_time:
+        if now_str == morning_time and last_morning_sent != today:
             rems = user_data.get("rems", [])
             today = now.strftime("%Y-%m-%d")
             today_rems = [r for r in rems if r["datetime"].startswith(today)]
@@ -340,6 +342,10 @@ async def check_rems(context):
                 msg = "☀️ Good Morning! No schedule for today. Enjoy your day! 😊"
 
             await context.bot.send_message(chat_id=user_id, text=msg)
+
+            # mark as sent today so it doesn't send again
+            db.rems[user_id]["last_morning_sent"] = today
+            db.save()
 
         # 🔔 reminder notifications — per REM
         for rem in user_data.get("rems", []):
