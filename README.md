@@ -24,9 +24,9 @@ Before building the bot, a survey was conducted targeting **Myanmar Telegram use
 🔗 **Survey (Myanmar only):** [View Survey](https://docs.google.com/forms/d/1SRfZ_2U3-znFYuBcm0hJh-R2qEZ5dZmnz_noWjYr0sg/edit)
 
 **71 responses** were collected, cleaned and analyzed:
-- Raw data collected via Google Forms ![Raw Data](Telegram_Usage_Survey_raw.xlsx)
-- Data cleaned and processed in Excel ![Cleaned_Data](cleaned_Rem_English.xlsx)
-- Visualized using Power BI dashboard ![Dashboard](Dashboard.pbix)
+- Raw data collected via Google Forms [Raw Data](Telegram_Usage_Survey_raw.xlsx)
+- Data cleaned and processed in Excel [Cleaned_Data](cleaned_Rem_English.xlsx)
+- Visualized using Power BI dashboard [Dashboard](Dashboard.pbix)
 
 | Finding | Result |
 |---|---|
